@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+var static = require('node-static');
+
+var file = new static.Server('./static');
+
+require('http').createServer(function(req,res) {
+    req.addListener('end',function() {
+        file.serve(req,res,function(err) {
+            if (err && (err.status === 404)) {
+                file.serveFile('/404.html',404,{},req,res);
+            }
+        });
+    }).resume();
+}).listen(8080);
